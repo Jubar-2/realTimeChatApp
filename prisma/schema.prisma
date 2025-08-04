@@ -1,0 +1,73 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// model 
+
+model User {
+  userId                     Int           @id @default(autoincrement())
+  name                       String
+  username                   String        @unique @db.VarChar(100)
+  email                      String        @unique @db.VarChar(255)
+  password                   String
+  avatar                     String?
+  refreshToken               String?
+  conversation               conversation? @relation(fields: [conversationConversationId], references: [conversationId])
+  conversationConversationId Int?
+  Message                    Message[]
+  reaction                   reaction[]
+  createdAt                  DateTime      @default(now())
+  updatedAt                  DateTime      @updatedAt
+}
+
+model conversation {
+  conversationId   Int      @id @default(autoincrement())
+  participates     User[]
+  lastMessage      Message  @relation(fields: [messageMessageId], references: [MessageId])
+  unreadCount      Int      @default(0)
+  messageMessageId Int
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+enum contentType {
+  IMAGE
+  VIDEO
+  TEXT
+}
+
+model reaction {
+  reactionId       Int      @id @default(autoincrement())
+  emoji            String
+  users            User[]
+  userUserId       Int
+  Message          Message? @relation(fields: [messageMessageId], references: [MessageId])
+  messageMessageId Int?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+model Message {
+  MessageId       Int            @id @default(autoincrement())
+  conversation    conversation[]
+  sender          User           @relation(fields: [userUserId], references: [userId])
+  content         String
+  imageOrVideoUrl String
+  userUserId      Int
+  contentType     contentType    @default(TEXT)
+  reaction        reaction[]
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+}
