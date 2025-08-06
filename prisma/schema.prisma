@@ -17,29 +17,38 @@ datasource db {
 // model 
 
 model User {
-  userId                     Int           @id @default(autoincrement())
-  name                       String
-  username                   String        @unique @db.VarChar(100)
-  email                      String        @unique @db.VarChar(255)
-  password                   String
-  avatar                     String?
-  refreshToken               String?
-  conversation               conversation? @relation(fields: [conversationConversationId], references: [conversationId])
-  conversationConversationId Int?
-  Message                    Message[]
-  reaction                   reaction[]
-  createdAt                  DateTime      @default(now())
-  updatedAt                  DateTime      @updatedAt
+  userId                  Int                       @id @default(autoincrement())
+  name                    String
+  username                String                    @unique @db.VarChar(100)
+  email                   String                    @unique @db.VarChar(255)
+  password                String
+  avatar                  String?
+  refreshToken            String?
+  Message                 Message[]
+  reaction                reaction[]
+  createdAt               DateTime                  @default(now())
+  updatedAt               DateTime                  @updatedAt
+  ConversationParticipant ConversationParticipant[]
 }
 
-model conversation {
-  conversationId   Int      @id @default(autoincrement())
-  participates     User[]
-  lastMessage      Message  @relation(fields: [messageMessageId], references: [MessageId])
-  unreadCount      Int      @default(0)
-  messageMessageId Int
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
+model Conversation {
+  conversationId          Int                       @id @default(autoincrement())
+  lastMessage             Message?                   @relation(fields: [messageMessageId], references: [MessageId])
+  unreadCount             Int                       @default(0)
+  messageMessageId        Int?
+  createdAt               DateTime                  @default(now())
+  updatedAt               DateTime                  @updatedAt
+  conversationParticipant ConversationParticipant[]
+}
+
+model ConversationParticipant {
+  participantId  Int          @id @default(autoincrement())
+  userId         Int
+  participant    User         @relation(fields: [userId], references: [userId])
+  conversationId Int
+  conversation   Conversation @relation(fields: [conversationId], references: [conversationId])
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
 }
 
 enum contentType {
@@ -61,10 +70,10 @@ model reaction {
 
 model Message {
   MessageId       Int            @id @default(autoincrement())
-  conversation    conversation[]
+  conversation    Conversation[]
   sender          User           @relation(fields: [userUserId], references: [userId])
-  content         String
-  imageOrVideoUrl String
+  content         String?
+  imageOrVideoUrl String?
   userUserId      Int
   contentType     contentType    @default(TEXT)
   reaction        reaction[]
