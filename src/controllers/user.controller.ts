@@ -3,7 +3,6 @@ import { ApiResponse } from "@/utils/ApiResponse";
 import asyncHandler from "@/utils/asyncHandler";
 import { hashPassword, refreshAccessToken, generateAccessToken, isPasswordCorrect } from "@/utils/token";
 import { Request, Response } from 'express';
-import { date } from "zod";
 
 // Constant for cookie options (could be in a separate config file)
 const option = {

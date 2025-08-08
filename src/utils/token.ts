@@ -28,7 +28,7 @@ function refreshAccessToken(id: number): string {
         { expiresIn: process.env.REFRESH_ACCESS_EXPIRE as SignOptions["expiresIn"] });
 }
 
-async function generateAccessToken(user: AccessTokenPrams): Promise<string> {
+function generateAccessToken(user: AccessTokenPrams): string {
 
     const payload: AccessTokenPrams = { ...user };
 

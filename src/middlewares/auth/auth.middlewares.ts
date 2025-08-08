@@ -7,11 +7,11 @@ import jwt from "jsonwebtoken";
 
 export const verifyJWT = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
     try {
-        
-        // Extract token from cookies or Authorization header
-        const token = req.cookies?.asscessToken ||
-            req.header("Authorization")?.replace("Bearer ", "");
 
+        // Extract token from cookies or Authorization header
+        const token = req.cookies?.accessToken ||
+            req.header("Authorization")?.replace("Bearer ", "");
+        
         if (!token) {
             return res.status(500).json(new ApiResponse(500, {}, "Unthorization request"));
         }

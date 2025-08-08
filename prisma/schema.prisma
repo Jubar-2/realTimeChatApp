@@ -24,16 +24,22 @@ model User {
   password                String
   avatar                  String?
   refreshToken            String?
-  Message                 Message[]
-  reaction                reaction[]
+  Message                 Message[]                 @relation("SenderRelation")
+  reaction                Reaction[]
+  ConversationParticipant ConversationParticipant[]
+  ReceiverMessage         Message[]                 @relation("ReceiverRelation")
+  statusStatusId          Int?
+  Status                  Status[]                  @relation("userStatus")
+  viewStatus              Status?                   @relation("viwers", fields: [statusStatusId], references: [statusId])
+  isOnline                Boolean                   @default(false)
+  lastSeen                DateTime?
   createdAt               DateTime                  @default(now())
   updatedAt               DateTime                  @updatedAt
-  ConversationParticipant ConversationParticipant[]
 }
 
 model Conversation {
   conversationId          Int                       @id @default(autoincrement())
-  lastMessage             Message?                   @relation(fields: [messageMessageId], references: [MessageId])
+  lastMessage             Message?                  @relation(fields: [messageMessageId], references: [MessageId])
   unreadCount             Int                       @default(0)
   messageMessageId        Int?
   createdAt               DateTime                  @default(now())
@@ -51,13 +57,29 @@ model ConversationParticipant {
   updatedAt      DateTime     @updatedAt
 }
 
-enum contentType {
+enum ContentType {
   IMAGE
   VIDEO
   TEXT
 }
 
-model reaction {
+model Message {
+  MessageId       Int            @id @default(autoincrement())
+  conversation    Conversation[]
+  sender          User           @relation("SenderRelation", fields: [userUserId], references: [userId])
+  receiver        User?          @relation("ReceiverRelation", fields: [receiverUser], references: [userId])
+  content         String?
+  imageOrVideoUrl String?
+  userUserId      Int
+  receiverUser    Int?
+  contentType     ContentType    @default(TEXT)
+  messageStatus   String         @default("send")
+  reaction        Reaction[]
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+}
+
+model Reaction {
   reactionId       Int      @id @default(autoincrement())
   emoji            String
   users            User[]
@@ -68,15 +90,14 @@ model reaction {
   updatedAt        DateTime @updatedAt
 }
 
-model Message {
-  MessageId       Int            @id @default(autoincrement())
-  conversation    Conversation[]
-  sender          User           @relation(fields: [userUserId], references: [userId])
-  content         String?
-  imageOrVideoUrl String?
-  userUserId      Int
-  contentType     contentType    @default(TEXT)
-  reaction        reaction[]
-  createdAt       DateTime       @default(now())
-  updatedAt       DateTime       @updatedAt
+model Status {
+  statusId    Int         @id @default(autoincrement())
+  user        User        @relation("userStatus", fields: [userId], references: [userId])
+  userId      Int
+  content     String
+  contentType ContentType @default(TEXT)
+  viewers     User[]      @relation("viwers")
+  expiresAt   DateTime
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
 }
