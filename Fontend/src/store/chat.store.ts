@@ -234,10 +234,10 @@ export const useChatStore = create<ChatStore>((set, get) => ({
 
         // track users online or offline status
         socket.on("user_status", ({ userId, isOnline }) => {
-
             set((state) => {
                 const newOnlineUsers = new Map(state.onlineUsers);
                 newOnlineUsers.set(userId, isOnline);
+                console.log("user status", newOnlineUsers)
                 return { onlineUsers: newOnlineUsers }
             });
         });
@@ -505,8 +505,7 @@ export const useChatStore = create<ChatStore>((set, get) => ({
         if (!userId) return null;
         const { onlineUsers } = get();
         const status = onlineUsers.get(userId);
-
-        return status ? status.isOnline : null;
+        return status ? typeof status === "boolean" ? status : status.isOnline : null;
     },
 
     startTyping: (receiverId: number) => {
@@ -576,7 +575,7 @@ export const useChatStore = create<ChatStore>((set, get) => ({
         const { myStream } = get();
         console.log("sed streem")
         for (const track of myStream.getTracks()) {
-            console.log("steaming track",peer.peer)
+            console.log("steaming track", peer.peer)
             peer.peer.addTrack(track, myStream);
         }
     },
@@ -612,7 +611,7 @@ export const useChatStore = create<ChatStore>((set, get) => ({
         const socket = getSocket();
 
         const ans = await peer.getAnswer(incomingCallData.offer);
-        console.log("accpt call click",incomingCallData.from)
+        console.log("accpt call click", incomingCallData.from)
         socket.emit("call_accepted", { to: incomingCallData.from, ans });
     },
 

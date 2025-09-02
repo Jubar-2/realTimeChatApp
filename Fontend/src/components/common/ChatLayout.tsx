@@ -76,6 +76,7 @@ export default function ChatLayout() {
     );
   }
 
+  console.log(isUserOnline(Number(selectedContact?.userId)))
 
   return (
     <>
