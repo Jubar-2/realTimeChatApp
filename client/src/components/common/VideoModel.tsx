@@ -34,7 +34,7 @@ export default function VideoModel({ setModel }: Props) {
                     muted
                     height="250px"
                     width="500px"
-                    url={myStream}
+                    url={myStream ?? undefined}
                 />
 
                 {/* Overlay Calling Text */}

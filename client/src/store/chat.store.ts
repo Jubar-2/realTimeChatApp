@@ -95,6 +95,9 @@ interface ChatStore {
     sendStreams: () => void;
     cancelCall: () => void;
     handleCallUser: () => Promise<Boolean>;
+    cancelIncomingCall: () => void;
+    acceptVideoCall: () => void;
+    handleNegoNeeded: () => void;
     cleanup: () => void;
 }
 

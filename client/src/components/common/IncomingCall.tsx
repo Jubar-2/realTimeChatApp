@@ -5,14 +5,14 @@ import peer from "@/service/PeerService.service"
 
 export default function IncomingCall() {
   // const [incoming, setIncoming] = useState(false);
-  const [remoteStream, setRemoteStream] = useState(null);
+  const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
   const { incomingCall, myStream, cancelIncomingCall, acceptVideoCall, handleNegoNeeded } = useChatStore()
 
   useEffect(() => {
     peer.peer.addEventListener("track", async (ev) => {
       const remoteStream = ev.streams;
       console.log("GOT TRACKS!!");
-      console.log("remote streem",remoteStream)
+      console.log("remote streem", remoteStream)
       setRemoteStream(remoteStream[0])
     })
   }, []);
@@ -47,7 +47,7 @@ export default function IncomingCall() {
               muted
               height="250px"
               width="500px"
-              url={myStream}
+              url={myStream ?? undefined}
             />
 
             <ReactPlayer
@@ -55,7 +55,7 @@ export default function IncomingCall() {
               muted
               height="250px"
               width="500px"
-              url={remoteStream}
+              url={remoteStream ?? undefined}
             />
 
 

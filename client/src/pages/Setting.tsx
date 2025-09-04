@@ -1,11 +1,11 @@
 import { useChatStore } from '@/store/chat.store'
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import ReactPlayer from 'react-player'
 import peer from "@/service/PeerService.service"
 // import peer from '@/service/PeerService.service'
 function Setting() {
     const { myStream, handleCallUser, handleNegoNeeded, sendStreams } = useChatStore();
-    const [remoteStream, setRemoteStream] = useState(null);
+    const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
     // (async () => {
     //     // const offer = await peer.getOffer();
     //     // console.log(offer)
@@ -63,7 +63,7 @@ function Setting() {
             peer.peer.removeEventListener("negotiationneeded", handleNegoNeeded);
         };
     }, [handleNegoNeeded]);
-     
+
     return (
         <div>
             <h1>Room Page</h1>
@@ -81,7 +81,7 @@ function Setting() {
                     />
                 </>
             )}
-           {remoteStream && (
+            {remoteStream && (
                 <>
                     <h1>Remote Stream</h1>
                     <ReactPlayer
