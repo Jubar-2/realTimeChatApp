@@ -13,10 +13,7 @@ const typingUsers = new Map();
 const initializeSocket = (server: HTTPServer | HTTPSServer) => {
     const io = new Server(server, {
         cors: {
-            origin: [
-                process.env.FRONTEND_URL || "http://192.168.0.111:5173/chat",
-                "http://localhost:5173"
-            ],
+            origin: process.env.FRONTEND_URL,
             credentials: true,
             methods: ['GET', 'PUT', 'POST', 'DELETE'],
         },
@@ -180,7 +177,7 @@ const initializeSocket = (server: HTTPServer | HTTPSServer) => {
 
         socket.on("call_accepted", ({ to, ans }) => {
             const receiverSocketId = onLineUsers.get(to);
-            console.log("call accepted",to,receiverSocketId)
+            console.log("call accepted", to, receiverSocketId)
             io.to(receiverSocketId).emit("call:accepted", { from: userId, ans });
         });
 
