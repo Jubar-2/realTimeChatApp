@@ -4,7 +4,7 @@ export default function timeAgo(dateString: string | null) {
 
     const date = new Date(dateString);
     const now = new Date();
-    const diff = Math.floor((now - date) / 1000); // difference in seconds
+    const diff = Math.floor((now.getTime() - date.getTime()) / 1000); // difference in seconds
 
     if (diff < 60) {
         return `${diff}s ago`;
