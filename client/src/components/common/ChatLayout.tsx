@@ -32,10 +32,10 @@ export default function ChatLayout() {
   }, [messages]);
 
   useEffect(() => {
-    if (selectedContact?.userId && selectedContact.ConversationParticipant[0].conversation.conversationId) {
-      fetchMessages(selectedContact.ConversationParticipant[0].conversation.conversationId)
+    if (selectedContact?.userId && selectedContact.ConversationParticipant[0]?.conversation.conversationId) {
+      fetchMessages(selectedContact.ConversationParticipant[0]?.conversation.conversationId)
     }
-  }, [selectedContact, selectedContact?.ConversationParticipant[0].conversation.conversationId]);
+  }, [selectedContact, selectedContact?.ConversationParticipant[0]?.conversation.conversationId]);
 
 
   useEffect(() => {
@@ -66,7 +66,7 @@ export default function ChatLayout() {
     } else {
       setVideoModel(false)
     }
-  }, [setVideoModel, videoModel,handleCallUser])
+  }, [setVideoModel, videoModel, handleCallUser])
 
   if (loading) {
     return (
@@ -100,9 +100,6 @@ export default function ChatLayout() {
         {/* Messages container */}
         <div className="flex-1 overflow-y-auto p-4 space-y-4">
           {messages && messages.map((data, i) => (
-            // <div className="text-gray-700" key={i}>
-            //   {data.content}
-            // </div>
             <ChatMessage content={data.content} sender={data.receiverUser !== user?.userId ? "me" : "other"} key={i} />
           ))}
           {isTyping ? 'typing ...' : ''}

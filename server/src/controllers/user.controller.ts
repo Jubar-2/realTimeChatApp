@@ -122,7 +122,58 @@ const allUsers = asyncHandler(async (req, res) => {
 });
 
 const searchUsers = asyncHandler(async (req: Request, res: Response) => {
-    // const { } = 
+    const search = req.query.search as string;
+
+    try {
+
+        const userId = req.user.userId;
+
+        const users = userId
+            ? await prisma.user.findMany({
+                where: {
+                    NOT: { userId },
+                    OR: [
+                        { username: { contains: search, mode: "insensitive" } },
+                        { name: { contains: search, mode: "insensitive" } },
+                    ]
+                },
+
+                select: {
+                    avatar: true,
+                    email: true,
+                    isOnline: true,
+                    lastSeen: true,
+                    name: true,
+                    statusStatusId: true,
+                    userId: true,
+                    username: true,
+                    ConversationParticipant: {
+                        where: {
+                            conversation: {
+                                conversationParticipant: {
+                                    some: { userId }
+                                }
+                            }
+                        },
+                        include: {
+                            conversation: {
+                                include: {
+                                    lastMessage: true
+                                }
+                            }
+                        }
+                    }
+                }
+            })
+            : [];
+
+
+        return res.status(201).json(new ApiResponse(201, users, "get all users"));
+    } catch (error) {
+        console.error("Registration error:", error);
+        return res.status(500).json(new ApiResponse(500, {}, "Internal server error"));
+    }
+
 })
 
 const loginUser = asyncHandler(
@@ -309,4 +360,12 @@ const refreshAccessTokenClt = asyncHandler(async (req: Request, res: Response) =
     }
 })
 
-export { userRegister, loginUser, logOutUser, checkAuthorizeUser, refreshAccessTokenClt, allUsers }
+export {
+    userRegister,
+    loginUser,
+    logOutUser,
+    checkAuthorizeUser,
+    refreshAccessTokenClt,
+    allUsers,
+    searchUsers
+}

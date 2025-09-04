@@ -17,7 +17,19 @@ const useGetMessages = (conversationId: Number) => {
         queryFn: async () => {
             return await axios.get(`/api/v1/message/${conversationId}/get-message`);
         },
-    })
+    });
 }
 
-export { useGetAllUsers, useGetMessages }
+function useFiendUsers(search: string) {
+    return useQuery({
+        queryKey: ["fiend-users", search],
+        queryFn: async () => {
+            const { data } = await axios.get(`/api/v1/user/fiend-users`, {
+                params: { search },
+            });
+            return data;
+        }
+    });
+}
+
+export { useGetAllUsers, useGetMessages, useFiendUsers }

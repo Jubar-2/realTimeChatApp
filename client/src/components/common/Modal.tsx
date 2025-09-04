@@ -1,4 +1,4 @@
-import { Fragment } from "react";
+import { Fragment, type Dispatch, type SetStateAction } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { Search } from "lucide-react";
 
@@ -7,9 +7,11 @@ interface ModalProps {
   onClose: () => void;
   title?: string;
   children: React.ReactNode;
+  searchValue: string;
+  setSearchValue: Dispatch<SetStateAction<string>>;
 }
 
-export default function Modal({ isOpen, onClose, title, children }: ModalProps) {
+export default function Modal({ isOpen, onClose, title, children, searchValue, setSearchValue }: ModalProps) {
   return (
     <Transition appear show={isOpen} as={Fragment}>
       <Dialog as="div" className="relative z-50" onClose={onClose}>
@@ -51,8 +53,8 @@ export default function Modal({ isOpen, onClose, title, children }: ModalProps) 
                     <input
                       type="text"
                       placeholder="Search..."
-                      // value={search}
-                      // onChange={(e) => setSearch(e.target.value)}
+                      value={searchValue}
+                      onChange={(e) => setSearchValue(e.target.value)}
                       className="w-full pl-9 pr-3 py-2 text-sm border rounded-lg focus:outline-none focus:ring focus:ring-blue-100"
                     />
                   </div>

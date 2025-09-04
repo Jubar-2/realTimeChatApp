@@ -72,8 +72,12 @@ interface ChatStore {
     onlineUsers: Map<number, { isOnline: boolean; lastSeen: string | null }>;
     typingUsers: Map<number, Set<number>>;
     loading: boolean;
-    myStream: object | null;
+    myStream: MediaStream | null;
     incomingCall: boolean;
+    incomingCallData: {
+        from: number;
+        offer: any;
+    } | null;
 
     initSocketListener: () => void;
     setCurrentUser: (user: any) => void;
@@ -88,6 +92,9 @@ interface ChatStore {
     startTyping: (receiverId: number) => void;
     stopTyping: (receiverId: number) => void;
     isUserTyping: (userId: number) => boolean | null;
+    sendStreams: () => void;
+    cancelCall: () => void;
+    handleCallUser: () => Promise<Boolean>;
     cleanup: () => void;
 }
 
@@ -128,28 +135,8 @@ export const useChatStore = create<ChatStore>((set, get) => ({
 
         // linting for including message
         socket.on("receive_message", (message) => {
-            // console.log(message)
-
             get().receiveMessage(message)
         });
-
-        // confirm message delivery 
-        // socket.on("message_send", (message) => {
-        //     console.log("send message")
-        //     set((state) => ({
-        //         message: state.message.map((msg) =>
-        //             msg.id === message.id ? { ...msg } : msg)
-        //     }));
-        // });
-
-        // update message status
-        // socket.on("message_status_update", ({ messageId, messageStatus }) => {
-        //     set((state) => ({
-        //         messages: state.messages.map((msg) =>
-        //             msg.id === messageId ? { ...msg, messageStatus } : msg
-        //         )
-        //     }))
-        // });
 
         // listener for typing users
         socket.on("user_typing", ({ userId, conversionId, isTyping }) => {
@@ -179,10 +166,9 @@ export const useChatStore = create<ChatStore>((set, get) => ({
 
 
             try {
-                // const socket = getSocket();
 
                 const stream = await navigator.mediaDevices.getUserMedia({
-                    // audio: true,
+                    audio: true,
                     video: true,
                 });
 
@@ -192,19 +178,13 @@ export const useChatStore = create<ChatStore>((set, get) => ({
                     incomingCallData: { from, offer }
                 });
 
-                console.log(`Incoming Call`, from, offer);
-
-                // const ans = await peer.getAnswer(offer);
-
-                // socket.emit("call_accepted", { to: from, ans });
-
             } catch (error) {
                 console.log(error)
             }
 
         });
 
-        socket.on("call:accepted", async ({ from, ans }) => {
+        socket.on("call:accepted", async ({ ans }) => {
             console.log("Call Accepted!");
             await peer.setLocalDescription(ans);
             get().sendStreams();
@@ -341,31 +321,8 @@ export const useChatStore = create<ChatStore>((set, get) => ({
 
         stopTyping(Number(receiverId));
 
-        // let conversationId = null;
-
-        // if (conversions?.length > 0) {
-        //     const conversation = conversions.find((conv) =>
-        //         conv.ConversationParticipant.some(p => p?.conversation?.lastMessage?.userUserId === senderId) &&
-        //         conv.ConversationParticipant.some(p => p?.conversation?.lastMessage?.receiverUser === receiverId)
-        //     );
-
-        //     if (conversation) {
-        //         conversationId = conversation.id;
-        //         set({ currentConversation: conversationId });
-        //     }
-        // }
-
         // tempId message before response
         const tempId = Number(`00${Math.random() * 10}`);
-        // const optimisticMessage = {
-        //     id: tempId,
-        //     sender: { id: senderId },
-        //     receiver: { id: receiverId },
-        //     conversation: currentConversion,
-        //     // imageOrVideoUrl:
-        //     content: content,
-        //     messageStatus: status
-        // };
 
         const optimisticMessage: Message = {
             MessageId: tempId, // temp id
@@ -555,13 +512,11 @@ export const useChatStore = create<ChatStore>((set, get) => ({
 
             const socket = getSocket();
             const stream = await navigator.mediaDevices.getUserMedia({
-                // audio: true,
+                audio: true,
                 video: true,
             });
             const offer = await peer.getOffer();
             set({ myStream: stream });
-            // console.log(currentConversion)
-            // socket.emit("user_video_call", { to: 1, offer });
             socket.emit("user_video_call", { to: conversion?.userId, offer });
             return true
         } catch (error) {
@@ -571,12 +526,11 @@ export const useChatStore = create<ChatStore>((set, get) => ({
     },
 
     sendStreams: () => {
-        console.log("start streams")
         const { myStream } = get();
-        console.log("sed streem")
-        for (const track of myStream.getTracks()) {
-            console.log("steaming track", peer.peer)
-            peer.peer.addTrack(track, myStream);
+        if (myStream) {
+            for (const track of myStream.getTracks()) {
+                peer.peer.addTrack(track, myStream);
+            }
         }
     },
 
@@ -610,9 +564,8 @@ export const useChatStore = create<ChatStore>((set, get) => ({
 
         const socket = getSocket();
 
-        const ans = await peer.getAnswer(incomingCallData.offer);
-        console.log("accpt call click", incomingCallData.from)
-        socket.emit("call_accepted", { to: incomingCallData.from, ans });
+        const ans = await peer.getAnswer(incomingCallData?.offer);
+        socket.emit("call_accepted", { to: incomingCallData?.from, ans });
     },
 
     cancelCall: () => {
