@@ -1,19 +1,18 @@
 {
-  "projects": [
+  "version": 2,
+  "builds": [
     {
-      "root": "client",
-      "buildCommand": "npm install && npm run build",
-      "outputDirectory": "dist",
-      "framework": "vite"
+      "src": "client/package.json",
+      "use": "@vercel/static-build",
+      "config": { "distDir": "dist" }
     },
     {
-      "root": "server",
-      "functions": "src",
-      "framework": "express"
+      "src": "server/src/index.ts",
+      "use": "@vercel/node"
     }
   ],
-  "rewrites": [
-    { "source": "/api/(.*)", "destination": "/server/api/src" },
-    { "source": "/(.*)", "destination": "/client/dist/index.html" }
+  "routes": [
+    { "src": "/api/(.*)", "dest": "server/src/index.ts" },
+    { "src": "/(.*)", "dest": "client/dist/index.html" }
   ]
 }
