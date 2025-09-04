@@ -1,0 +1,19 @@
+{
+  "projects": [
+    {
+      "root": "client",
+      "buildCommand": "npm install && npm run build",
+      "outputDirectory": "dist",
+      "framework": "vite"
+    },
+    {
+      "root": "server",
+      "functions": "src",
+      "framework": "express"
+    }
+  ],
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": "/server/api/src" },
+    { "source": "/(.*)", "destination": "/client/dist/index.html" }
+  ]
+}
