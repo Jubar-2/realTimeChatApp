@@ -16,9 +16,8 @@
     // "resolveJsonModule": true,
     "isolatedModules": true,
     "incremental": true,
-    "outDir": "dist",
-    "rootDir": "src",
-    "baseUrl": "src",
+    "outDir": "./dist",
+    "rootDir": "./src",
     "plugins": [
       {
         "name": "next"
