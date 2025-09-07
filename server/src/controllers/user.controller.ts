@@ -9,6 +9,7 @@ import jwt from "jsonwebtoken";
 const option = {
     httpOnly: true,
     secure: true,
+    sameSite: "none"
 };
 
 const userRegister = asyncHandler(async (

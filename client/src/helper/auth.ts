@@ -19,7 +19,9 @@ export function useSignUp() {
 export function useSignIn() {
   return useMutation({
     mutationFn: (data: z.infer<typeof signInSchema>) => {
-      return axios.post(BaseUrl + '/api/v1/user/login', data);
+      return axios.post(BaseUrl + '/api/v1/user/login', data, {
+        withCredentials: true
+      });
     },
   });
 }

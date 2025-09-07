@@ -8,7 +8,7 @@ export const initializeSocket = () => {
 
     const user = useUserStore.getState().user;
 
-    const BACK_END_URL = "http://localhost:5001";
+    const BACK_END_URL = "https://chat-appapi.vercel.app";
 
     socket = io(BACK_END_URL, {
         withCredentials: true,

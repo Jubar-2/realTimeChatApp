@@ -20,8 +20,6 @@ app.use(cookieParser())
 const server = http.createServer(app);
 const io = initializeSocket(server);
 
-console.log(io.socketUserMap)
-
 // use socket
 app.use((req, _, next) => {
     req.io = io;
