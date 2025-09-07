@@ -1,7 +1,8 @@
 import { getSocket } from "@/service/chat.service";
 import axios from "axios";
 import { create } from "zustand";
-import peer from "@/service/PeerService.service"
+import peer from "@/service/PeerService.service";
+import { BaseUrl } from "@/constant";
 
 interface Message {
     MessageId: number;
@@ -267,7 +268,7 @@ export const useChatStore = create<ChatStore>((set, get) => ({
         set({ loading: true, error: null });
 
         try {
-            const { data } = await axios.get("/api/v1/message/get-conversation");
+            const { data } = await axios.get(BaseUrl + "/api/v1/message/get-conversation");
             set({ conversions: data.data, loading: false });
 
             get().initSocketListener();
@@ -291,7 +292,7 @@ export const useChatStore = create<ChatStore>((set, get) => ({
 
         // console.log(data)
         try {
-            const { data } = await axios.get(`/api/v1/message/${conversationId}/get-message`);
+            const { data } = await axios.get(BaseUrl + `/api/v1/message/${conversationId}/get-message`);
 
             const messageArray = data.data || [];
             // console.log(messageArray)
@@ -345,7 +346,7 @@ export const useChatStore = create<ChatStore>((set, get) => ({
         }));
 
         try {
-            const { data } = await axios.post("/api/v1/message/send-message", formData, { headers: { "Content-Type": "multipart/form-data" } });
+            const { data } = await axios.post(BaseUrl + "/api/v1/message/send-message", formData, { headers: { "Content-Type": "multipart/form-data" } });
             const messageData = data.data || data;
 
             set((state) => ({
