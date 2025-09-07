@@ -5,12 +5,12 @@ import path from 'path';
 
 export default defineConfig({
   server: {
-     host: true,
+    host: true,
     proxy: {
       '/api': "https://chat-appapi.vercel.app/"
     }
   },
-  plugins: [react(),tailwindcss()],
+  plugins: [react(), tailwindcss()],
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
