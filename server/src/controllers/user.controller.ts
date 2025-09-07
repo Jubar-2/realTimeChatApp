@@ -8,7 +8,7 @@ import jwt from "jsonwebtoken";
 // Constant for cookie options (could be in a separate config file)
 const option = {
     httpOnly: true,
-    secure: false,
+    secure: true,
 };
 
 const userRegister = asyncHandler(async (
