@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "npx tsx src/index.ts",
-    "build": "tsc && tsc-alias",
+    "build": "prisma generate && tsc && tsc-alias",
     "start": "node -r tsconfig-paths/register dist/index.js",
     "postinstall": "prisma generate"
   },
