@@ -11,7 +11,8 @@ const option: CookieOptions = {
     httpOnly: true,
     secure: true,
     sameSite: "none",
-    domain: ".vercel.app"
+    domain: ".vercel.app",
+    path: "/"
 };
 
 const userRegister = asyncHandler(async (
