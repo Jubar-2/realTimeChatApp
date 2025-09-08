@@ -4,12 +4,14 @@ import asyncHandler from "@/utils/asyncHandler";
 import { hashPassword, generateAccessToken, isPasswordCorrect, refreshAccessToken, JwtPayload } from "@/utils/token";
 import { Request, Response } from 'express';
 import jwt from "jsonwebtoken";
+import { CookieOptions } from "express";
 
 // Constant for cookie options (could be in a separate config file)
-const option = {
+const option: CookieOptions = {
     httpOnly: true,
     secure: true,
-    sameSite: "none"
+    sameSite: "none",
+    domain: ".vercel.app"
 };
 
 const userRegister = asyncHandler(async (

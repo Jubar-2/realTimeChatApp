@@ -12,7 +12,9 @@ const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 // Constant for cookie options (could be in a separate config file)
 const option = {
     httpOnly: true,
-    secure: false,
+    secure: true,
+    sameSite: "none",
+    domain: ".vercel.app"
 };
 const userRegister = (0, asyncHandler_1.default)(async (req, res) => {
     // Get fields 

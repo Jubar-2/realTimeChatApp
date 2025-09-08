@@ -22,7 +22,6 @@ app.use((0, cookie_parser_1.default)());
 const server = http_1.default.createServer(app);
 exports.server = server;
 const io = (0, socket_service_1.default)(server);
-console.log(io.socketUserMap);
 // use socket
 app.use((req, _, next) => {
     req.io = io;
