@@ -14,6 +14,7 @@ exports.verifyJWT = (0, asyncHandler_1.default)(async (req, res, next) => {
         // Extract token from cookies or Authorization header
         const token = ((_a = req.cookies) === null || _a === void 0 ? void 0 : _a.accessToken) ||
             ((_b = req.header("Authorization")) === null || _b === void 0 ? void 0 : _b.replace("Bearer ", ""));
+        console.log(req.cookies);
         if (!token) {
             return res.status(400).json(new ApiResponse_1.ApiResponse(400, {}, "Unathorization request"));
         }

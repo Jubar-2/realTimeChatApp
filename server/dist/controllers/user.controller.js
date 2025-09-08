@@ -14,7 +14,8 @@ const option = {
     httpOnly: true,
     secure: true,
     sameSite: "none",
-    domain: ".vercel.app"
+    // domain: ".vercel.app",
+    path: "/"
 };
 const userRegister = (0, asyncHandler_1.default)(async (req, res) => {
     // Get fields 
